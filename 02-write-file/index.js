@@ -10,7 +10,7 @@ fs.writeFile(path.join(__dirname, 'text.txt'), '', err => {
 stdout.write('Howdy!!\nHow can I help you?\n');
 stdin.on('data', data => {
   if(data.toString().trim() == 'exit') {
-    stdout.write('Looking forward to seeing you soon again');
+    stdout.write('Looking forward to seeing you soon');
     process.exit();
   }
   fs.appendFile(path.join(__dirname, 'text.txt'), 

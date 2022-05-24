@@ -10,7 +10,7 @@ fsPromises.readdir(path.join(__dirname, 'secret-folder'), {withFileTypes: true})
           const basename = path.basename(dirent.name, ext);
           const sizeInBytes = await fsPromises.stat(path.join(__dirname, 'secret-folder', dirent.name));
           
-          console.log(basename + ' - ' + ext + ' - ' + sizeInBytes.size +'kb');
+          console.log(basename + ' - ' + ext + ' - ' + sizeInBytes.size +'b');
         }
       });
     },

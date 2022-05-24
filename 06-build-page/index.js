@@ -49,7 +49,7 @@ function emptyDir(folder) {
     );  
 }
 
-(async function getAssetsBundle() {
+(function getAssetsBundle() {
 
   fs.promises.access(path.join(__dirname, 'project-dist', 'assets'))
     .then(() => {

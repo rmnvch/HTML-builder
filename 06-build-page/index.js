@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const { Transform } = require('stream');
 
 fs.promises.mkdir(path.join(__dirname, 'project-dist'), {recursive: true});
 
@@ -58,4 +59,36 @@ function emptyDir(folder) {
     .catch(() => {
       readDir(path.join(__dirname, 'assets'));
     });
+})();
+
+(function getHTMLOutput() {
+  
+  const templateStream = fs.createReadStream(path.join(__dirname, 'template.html'));
+  const trasnformedFile = fs.createWriteStream(path.join(__dirname, 'project-dist', 'index.html'));
+
+  const transform = new Transform({
+    transform(chunk, enc, cb) {
+      let regExp = /{{\w*}}/gi;
+      let components = [];
+      chunk.toString().replace(regExp, (m,t) => {
+        components.push(m);
+      });
+
+      Promise.all(components.map(comp => {
+        return fs.promises.readFile(path.join(__dirname, 'components', `${comp.slice(2,-2)}.html`));
+      })).then(buffer => {
+        let output;
+        for(let i = 0; i < buffer.length; i++) {
+          output = chunk.toString().replace(components[i], buffer[i].toString());
+          chunk = output;
+        }
+        this.push(output);
+        cb();  
+      });
+    }
+  });
+
+  templateStream.pipe(transform).pipe(trasnformedFile);
+
+
 })();
